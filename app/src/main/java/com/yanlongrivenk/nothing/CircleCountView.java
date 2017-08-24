@@ -8,7 +8,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -38,9 +37,6 @@ public class CircleCountView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //画背景
-        int radWidth = mViewWidth / 2;
-        int radHeight = mViewHeight / 2;
 
         mPaint.setAntiAlias(true);
         mPaint.setColor(circleColor);
@@ -49,49 +45,30 @@ public class CircleCountView extends View {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
 
-        //画背景
         mPaint.setColor(circleColor);
         mRectF = new RectF(circleWidth, circleWidth, mViewWidth - circleWidth, mViewHeight - circleWidth);
         canvas.drawArc(mRectF, startAngle, sweepAngle, false, mPaint);
 
-        //话背景
         mPaint.setColor(progressColor);
         canvas.drawArc(mRectF, startAngle, sweepAngle * progressPercent, false, mPaint);
 
-        //文字
-//        mPaint.reset();
-//        mPaint.setAntiAlias(true);
         mPaint.setStrokeWidth(1);
         mPaint.setColor(textColor);
         mPaint.setTextSize(textSize);
 
-//        text.setLength(0);
-//        text.append();
-        String text = (int)(progressPercent * 100) + "%";
-        Log.d("CircleCountView", "haha" + text);
-//        Rect textBound = new Rect();
-//        mPaint.getTextBounds(text, 0, text.length(), textBound);
-//        Paint.FontMetrics fontMetrics = mPaint.getFontMetrics();
-//        int x = (getWidth() - textBound.width()) / 2;
-//        //baseline
-//        int baseline = (int)(getHeight() / 2 + (fontMetrics.top - fontMetrics.bottom) / 2 - fontMetrics.bottom);
-//        canvas.drawText(text, x, baseline, mPaint);
+        text.setLength(0);
+        text.append((int)(progressPercent * 100) + "%");
 
-
-        // 测量文字的宽高
-        mTextBounds = new Rect();
-        mPaint.getTextBounds(text, 0, text.length(), mTextBounds);
-        int dx = (getWidth() - mTextBounds.width()) / 2;
-        // 获取画笔的FontMetrics
+        Rect textBound = new Rect();
+        mPaint.getTextBounds(text.toString(), 0, text.length(), textBound);
         Paint.FontMetrics fontMetrics = mPaint.getFontMetrics();
-        // 计算文字的基线
-        int baseLine = (int) (getHeight() / 2 + (fontMetrics.bottom - fontMetrics.top) / 2 - fontMetrics.bottom);
-        // 绘制步数文字
-        canvas.drawText(text, dx, baseLine, mPaint);
+        int x = (getWidth() - textBound.width()) / 2;
+        //baseline
+        int baseline = (int)(getHeight() / 2 + (fontMetrics.bottom - fontMetrics.top) / 2 - fontMetrics.bottom);
+        canvas.drawText(text.toString(), x, baseline, mPaint);
 
     }
 
-    //画进度
     public void drawProgress(float progressPercent) {
         this.progressPercent = progressPercent;
         invalidate();
